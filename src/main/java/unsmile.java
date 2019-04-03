@@ -8,11 +8,16 @@ import java.nio.file.Paths;
 
 public class unsmile {
     public static void main(String[] args) {
+        if (args.length < 1) {
+            System.err.println("Usage: \nunsmile <SMILE FILE>");
+            return;
+        }
+
         byte[] encoded;
         try {
             encoded = Files.readAllBytes(Paths.get(args[0]));
         }catch (IOException e) {
-            System.out.println("Error reading smile file!");
+            System.err.println("Error reading smile file!");
             return;
         }
         ObjectMapper smileMapper = new ObjectMapper(new SmileFactory());
@@ -21,6 +26,7 @@ public class unsmile {
         try {
             node = smileMapper.readTree(encoded);
         }catch (IOException e) {
+            System.err.println("Error decoding smile file!");
             return;
         }
 
@@ -28,8 +34,8 @@ public class unsmile {
         String json;
         try {
             json = jsonMapper.writeValueAsString(node);
-
         }catch (JsonProcessingException e) {
+            System.err.println("Error encoding json string!");
             return;
         }
 
